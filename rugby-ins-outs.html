@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rugby Ins & Outs</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cherry:#C1272D;--cherry-dark:#8B1A1E;--cherry-dim:rgba(193,39,45,0.12);--white:#F5F3EF;--off:#1A1A1A;--surface:#242424;--surface2:#2E2E2E;--surface3:#383838;--muted:#888;--green:#1D9E75;--green-dim:rgba(29,158,117,0.15);--amber:#D4A017;--amber-dim:rgba(212,160,23,0.12);--blue:#3A7FD5;--blue-dim:rgba(58,127,213,0.12);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--off);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;}
+
+/* NAV */
+nav{background:#111;border-bottom:1px solid #2a2a2a;padding:0 2rem;display:flex;align-items:center;height:56px;gap:0;position:sticky;top:0;z-index:200;}
+.nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:0.04em;color:var(--white);margin-right:2rem;white-space:nowrap;}
+.nav-logo span{color:var(--cherry);}
+.nav-links{display:flex;gap:0;flex:1;overflow-x:auto;}
+.nav-link{padding:0 14px;height:56px;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
+.nav-link:hover{color:var(--white);}
+.nav-link.active{color:var(--white);border-bottom-color:var(--cherry);}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;padding-left:1rem;}
+.admin-btn{background:transparent;color:var(--muted);border:1px solid #333;padding:6px 14px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;transition:all 0.15s;white-space:nowrap;}
+.admin-btn:hover{color:var(--white);border-color:#555;}
+.admin-btn.on{color:var(--amber);border-color:var(--amber);background:rgba(212,160,23,0.1);}
+.add-btn{background:var(--cherry);color:#fff;border:none;padding:7px 16px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;transition:background 0.15s;white-space:nowrap;display:none;}
+.add-btn:hover{background:var(--cherry-dark);}
+.admin-banner{background:rgba(212,160,23,0.08);border-bottom:1px solid rgba(212,160,23,0.2);padding:5px 2rem;font-size:11px;color:var(--amber);display:none;align-items:center;gap:10px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;text-transform:uppercase;}
+
+/* SUBNAV / LEAGUE BAR */
+.league-bar{background:#111;border-bottom:1px solid #222;padding:0 2rem;display:flex;gap:0;overflow-x:auto;}
+.league-tab{padding:9px 16px;font-size:11px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.15s;font-family:'Barlow Condensed',sans-serif;}
+.league-tab:hover{color:var(--white);}
+.league-tab.active{color:var(--white);border-bottom-color:var(--cherry);}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;}
+
+/* LAYOUT */
+.two-col{display:grid;grid-template-columns:1fr 300px;gap:0;min-height:calc(100vh - 112px);}
+.feed{padding:2rem;border-right:1px solid #2a2a2a;}
+.sidebar{padding:1.5rem;background:#1E1E1E;}
+.full-page{padding:2rem;}
+.page-header{margin-bottom:1.5rem;}
+.page-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;letter-spacing:0.03em;text-transform:uppercase;line-height:1;}
+.page-title span{color:var(--cherry);}
+.page-sub{font-size:13px;color:var(--muted);margin-top:5px;font-weight:300;}
+
+/* FILTERS */
+.filter-row{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;}
+.fpill{padding:5px 13px;border-radius:3px;border:1px solid #333;background:transparent;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;transition:all 0.15s;font-family:'Barlow Condensed',sans-serif;}
+.fpill:hover{border-color:#555;color:var(--white);}
+.fpill.active{background:var(--cherry);border-color:var(--cherry);color:#fff;}
+.sbox{margin-left:auto;background:#2a2a2a;border:1px solid #333;border-radius:3px;padding:6px 12px;color:var(--white);font-size:13px;font-family:'Barlow',sans-serif;width:190px;outline:none;}
+.sbox::placeholder{color:var(--muted);}
+.sbox:focus{border-color:var(--cherry);}
+
+/* TRANSFER CARDS */
+.tcard{background:var(--surface);border:1px solid #2e2e2e;border-radius:6px;padding:0.85rem 1.1rem;margin-bottom:9px;display:grid;grid-template-columns:46px 1fr auto;gap:1rem;align-items:center;position:relative;overflow:hidden;transition:all 0.15s;}
+.tcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.tcard.confirmed::before{background:var(--green);}
+.tcard.extended::before{background:var(--cherry);}
+.tcard.departure::before{background:var(--amber);}
+.tcard:hover{background:var(--surface2);}
+.flag-av{width:46px;height:46px;border-radius:8px;background:var(--surface3);display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #333;flex-shrink:0;font-size:20px;line-height:1;}
+.flag-nat{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;font-family:'Barlow Condensed',sans-serif;}
+.cname{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:0.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cdetails{display:flex;align-items:center;gap:7px;margin-top:3px;flex-wrap:wrap;}
+.cpos{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;background:#2a2a2a;padding:2px 6px;border-radius:2px;white-space:nowrap;}
+.cclubs{font-size:12px;color:#aaa;display:flex;align-items:center;gap:5px;}
+.carrow{color:var(--cherry);}
+.cmeta{font-size:11px;color:var(--muted);margin-top:2px;}
+.cright{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.sbadge{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 9px;border-radius:2px;}
+.sbadge.confirmed{background:var(--green-dim);color:var(--green);border:1px solid rgba(29,158,117,0.3);}
+.sbadge.extended{background:var(--cherry-dim);color:var(--cherry);border:1px solid rgba(193,39,45,0.3);}
+.sbadge.departure{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(212,160,23,0.3);}
+.cdate{font-size:10px;color:var(--muted);}
+.adm-acts{display:flex;gap:4px;}
+.ibtn{background:none;border:1px solid #333;color:#555;cursor:pointer;font-size:11px;padding:3px 7px;border-radius:3px;transition:all 0.15s;font-family:'Barlow Condensed',sans-serif;}
+.ibtn.ed:hover{color:var(--blue);border-color:var(--blue);}
+.ibtn.dl:hover{color:var(--cherry);border-color:var(--cherry);}
+
+/* EMPTY */
+.empty{text-align:center;padding:3rem 2rem;}
+.empty-icon{font-size:36px;margin-bottom:1rem;opacity:0.3;}
+.empty-text{font-size:15px;color:var(--muted);}
+
+/* RESULTS */
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.lblock{background:var(--surface);border:1px solid #2e2e2e;border-radius:8px;overflow:hidden;}
+.lblock-hdr{padding:0.7rem 1rem;border-bottom:1px solid #2e2e2e;display:flex;align-items:center;justify-content:space-between;}
+.lblock-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+.lblock-right{display:flex;align-items:center;gap:8px;}
+.lblock-round{font-size:11px;color:var(--muted);}
+.edit-rnd{background:none;border:1px solid #333;color:#555;font-size:10px;padding:2px 7px;border-radius:3px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;display:none;}
+.edit-rnd:hover{color:var(--blue);border-color:var(--blue);}
+.mrow{padding:0.5rem 1rem;border-bottom:1px solid #222;display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;position:relative;}
+.mrow:last-child{border-bottom:none;}
+.mrow:hover .edit-m{opacity:1;}
+.tname{font-size:12px;font-weight:500;}
+.tname.loser{color:var(--muted);font-weight:400;}
+.sblock{display:flex;align-items:center;gap:3px;justify-content:center;min-width:68px;}
+.sc{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;min-width:22px;text-align:center;}
+.sc.w{color:var(--white);}
+.sc.l{color:var(--muted);}
+.ssep{color:#444;font-size:13px;}
+.mdate{font-size:10px;color:var(--muted);text-align:center;margin-top:1px;}
+.edit-m{position:absolute;right:6px;top:50%;transform:translateY(-50%);opacity:0;background:none;border:1px solid #333;color:#555;font-size:10px;padding:2px 6px;border-radius:3px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;display:none;}
+.edit-m:hover{color:var(--blue);border-color:var(--blue);}
+.add-m-btn{width:100%;padding:7px;background:none;border:none;border-top:1px solid #222;color:#444;font-size:11px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.15s;display:none;}
+.add-m-btn:hover{color:var(--white);background:#2a2a2a;}
+
+/* LEAGUE PAGES */
+.league-page-hdr{background:var(--surface);border:1px solid #2e2e2e;border-radius:8px;padding:1.25rem;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;margin-bottom:1.5rem;}
+.league-badge{width:60px;height:60px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;}
+.league-switcher{display:flex;gap:6px;}
+.ls-btn{width:34px;height:34px;border-radius:4px;border:1.5px solid #333;background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:var(--muted);transition:all 0.15s;}
+.ls-btn.active{border-color:var(--cherry);color:var(--cherry);background:var(--cherry-dim);}
+.team-chips{display:flex;flex-wrap:wrap;gap:6px;padding:1rem;background:var(--surface);border:1px solid #2e2e2e;border-radius:8px;margin-bottom:1.5rem;}
+.tchip{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:4px;border:1px solid #2e2e2e;background:var(--surface2);cursor:pointer;font-size:12px;color:var(--muted);transition:all 0.15s;}
+.tchip:hover{border-color:#444;color:var(--white);}
+.tchip.active{border-color:var(--cherry);color:var(--white);background:var(--cherry-dim);}
+.team-section{background:var(--surface);border:1px solid #2e2e2e;border-radius:8px;overflow:hidden;margin-bottom:1rem;}
+.tsec-hdr{padding:0.9rem 1.25rem;border-bottom:1px solid #2e2e2e;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;}
+.tsec-hdr:hover{background:var(--surface2);}
+.team-initial{width:40px;height:40px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;flex-shrink:0;}
+.tsec-badges{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.in-badge{padding:3px 10px;border-radius:3px;background:var(--green-dim);border:1px solid rgba(29,158,117,0.3);color:var(--green);font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.out-badge{padding:3px 10px;border-radius:3px;background:var(--amber-dim);border:1px solid rgba(212,160,23,0.3);color:var(--amber);font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.ext-badge{padding:3px 10px;border-radius:3px;background:var(--cherry-dim);border:1px solid rgba(193,39,45,0.3);color:var(--cherry);font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.toggle-icon{color:var(--muted);font-size:14px;margin-left:6px;}
+.tsec-body{display:none;}
+.tsec-body.open{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid #2e2e2e;}
+.tsec-col{padding:1rem 1.25rem;}
+.tsec-col:not(:last-child){border-right:1px solid #2e2e2e;}
+.col-title{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;padding-bottom:5px;border-bottom:1px solid #2a2a2a;}
+.col-title.in{color:var(--green);}
+.col-title.out{color:var(--amber);}
+.col-title.ext{color:var(--cherry);}
+.player-row{display:flex;align-items:center;gap:8px;padding:0.45rem 0;border-bottom:1px solid #222;}
+.player-row:last-child{border-bottom:none;}
+.pflag{font-size:16px;flex-shrink:0;}
+.pinfo{flex:1;min-width:0;}
+.pname{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pdetail{font-size:10px;color:var(--muted);}
+.empty-col{font-size:12px;color:var(--muted);font-style:italic;padding:0.5rem 0;}
+
+/* BLOG */
+.blog-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:2rem;}
+.blog-card{background:var(--surface);border:1px solid #2e2e2e;border-radius:8px;overflow:hidden;cursor:pointer;transition:all 0.15s;}
+.blog-card:hover{border-color:#3a3a3a;transform:translateY(-2px);}
+.blog-thumb{height:140px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px;border-bottom:1px solid #2e2e2e;}
+.blog-body{padding:1rem;}
+.blog-league-tag{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-bottom:8px;display:inline-block;}
+.blog-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:0.02em;line-height:1.25;margin-bottom:6px;}
+.blog-excerpt{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px;}
+.blog-meta{font-size:11px;color:#555;display:flex;align-items:center;gap:8px;}
+.blog-post-full{background:var(--surface);border:1px solid #2e2e2e;border-radius:8px;padding:2rem;max-width:760px;}
+.blog-post-title{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;letter-spacing:0.02em;line-height:1.2;margin-bottom:12px;}
+.blog-post-meta{font-size:12px;color:var(--muted);margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid #2a2a2a;}
+.blog-post-body{font-size:14px;line-height:1.75;color:#ccc;}
+.blog-post-body p{margin-bottom:1rem;}
+.blog-post-body h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--white);margin:1.5rem 0 0.5rem;}
+.back-btn{background:none;border:1px solid #333;color:var(--muted);padding:7px 14px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;margin-bottom:1.5rem;transition:all 0.15s;display:inline-block;}
+.back-btn:hover{color:var(--white);border-color:#555;}
+
+/* SIDEBAR */
+.stitle{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.7rem;border-bottom:1px solid #2a2a2a;padding-bottom:5px;}
+.ssec{margin-bottom:1.5rem;}
+.ri{padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;gap:8px;}
+.ri:last-child{border-bottom:none;}
+
+/* MODALS */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.mo.open{display:flex;}
+.modal{background:#1A1A1A;border:1px solid #333;border-radius:8px;width:490px;max-width:96vw;max-height:92vh;overflow-y:auto;}
+.msm{width:380px;}
+.mhdr{padding:1.1rem 1.5rem;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between;}
+.mtitle{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;}
+.mclose{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:3px;}
+.mclose:hover{color:var(--white);}
+.mbody{padding:1.2rem 1.5rem;display:flex;flex-direction:column;gap:0.9rem;}
+.mfooter{padding:1rem 1.5rem;border-top:1px solid #2a2a2a;display:flex;gap:10px;justify-content:flex-end;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg.full{grid-column:1/-1;}
+.flabel{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'Barlow Condensed',sans-serif;}
+.fi,.fsel,.fta{background:#252525;border:1px solid #333;border-radius:4px;padding:8px 11px;color:var(--white);font-size:13px;font-family:'Barlow',sans-serif;outline:none;width:100%;transition:border-color 0.15s;}
+.fi:focus,.fsel:focus,.fta:focus{border-color:var(--cherry);}
+.fi::placeholder{color:#555;}
+.fsel option{background:#252525;}
+.fta{min-height:100px;resize:vertical;}
+.type-sel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.topt{padding:8px;border-radius:4px;border:1px solid #333;cursor:pointer;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;transition:all 0.15s;color:var(--muted);}
+.topt.sc{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.topt.sd{background:var(--amber-dim);border-color:var(--amber);color:var(--amber);}
+.topt.se{background:var(--cherry-dim);border-color:var(--cherry);color:var(--cherry);}
+.bcancelx{background:transparent;border:1px solid #333;color:var(--muted);padding:8px 16px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;}
+.bcancelx:hover{color:var(--white);border-color:#555;}
+.bsubmit{background:var(--cherry);border:none;color:#fff;padding:8px 20px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;}
+.bsubmit:hover{background:var(--cherry-dark);}
+.bdanger{background:transparent;border:1px solid rgba(193,39,45,0.4);color:var(--cherry);padding:8px 14px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;}
+.bdanger:hover{background:var(--cherry-dim);}
+.err{font-size:12px;color:var(--cherry);display:none;margin-top:-4px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.tcard,.lblock,.team-section,.blog-card{animation:fadeUp 0.18s ease;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Rugby <span>Ins & Outs</span></div>
+  <div class="nav-links">
+    <div class="nav-link active" onclick="goPage('transfers',this)">Transfers</div>
+    <div class="nav-link" onclick="goPage('results',this)">Results</div>
+    <div class="nav-link" onclick="goPage('league',this)">Leagues</div>
+    <div class="nav-link" onclick="goPage('blog',this)">Blog</div>
+  </div>
+  <div class="nav-right">
+    <button class="admin-btn" id="adm-btn" onclick="toggleAdmin()">Admin</button>
+    <button class="add-btn" id="add-t-btn" onclick="openTModal()">+ Add Transfer</button>
+  </div>
+</nav>
+<div class="admin-banner" id="adm-banner">
+  ⚙ Admin mode — <span style="cursor:pointer;text-decoration:underline;" onclick="logoutAdmin()">Sign out</span>
+</div>
+
+<!-- LEAGUE BAR (transfers only) -->
+<div class="league-bar" id="lbar">
+  <div class="league-tab active" onclick="fLeague('All',this)">All</div>
+  <div class="league-tab" onclick="fLeague('Premiership',this)">Premiership</div>
+  <div class="league-tab" onclick="fLeague('Top 14',this)">Top 14</div>
+  <div class="league-tab" onclick="fLeague('URC',this)">URC</div>
+  <div class="league-tab" onclick="fLeague('Super Rugby',this)">Super Rugby</div>
+  <div class="league-tab" onclick="fLeague('Japan TL',this)">Japan TL</div>
+</div>
+
+<!-- =================== TRANSFERS PAGE =================== -->
+<div class="page active" id="page-transfers">
+  <div class="two-col">
+    <div class="feed">
+      <div class="page-header">
+        <div class="page-title">Latest <span>Transfers</span></div>
+        <div class="page-sub" id="feed-sub">Showing 10 most recent across all leagues</div>
+      </div>
+      <div class="filter-row">
+        <div class="fpill active" onclick="fStatus('All',this)">All</div>
+        <div class="fpill" onclick="fStatus('confirmed',this)">Signings</div>
+        <div class="fpill" onclick="fStatus('departure',this)">Departures</div>
+        <div class="fpill" onclick="fStatus('extended',this)">Extended</div>
+        <input class="sbox" type="text" placeholder="Search player or club..." oninput="fSearch(this.value)">
+      </div>
+      <div id="tfeed"></div>
+      <div id="tempty" class="empty" style="display:none;"><div class="empty-icon">🏉</div><div class="empty-text">No transfers match your filters</div></div>
+    </div>
+    <div class="sidebar">
+      <div class="ssec"><div class="stitle">Recent additions</div><div id="recent-list"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== RESULTS PAGE =================== -->
+<div class="page" id="page-results">
+  <div class="full-page">
+    <div class="page-header">
+      <div class="page-title">This Week's <span>Results</span></div>
+      <div class="page-sub">Week of 14–15 March 2026</div>
+    </div>
+    <div class="results-grid" id="results-grid"></div>
+  </div>
+</div>
+
+<!-- =================== LEAGUE PAGE =================== -->
+<div class="page" id="page-league">
+  <div class="full-page">
+    <div class="league-page-hdr" id="league-hdr"></div>
+    <div class="team-chips" id="team-chips"></div>
+    <div id="teams-container"></div>
+  </div>
+</div>
+
+<!-- =================== BLOG PAGE =================== -->
+<div class="page" id="page-blog">
+  <div class="full-page">
+    <div id="blog-list-view">
+      <div class="page-header">
+        <div class="page-title">Latest <span>News</span></div>
+        <div class="page-sub">Analysis, opinions and transfer round-ups</div>
+      </div>
+      <div class="blog-grid" id="blog-grid"></div>
+      <div id="blog-empty" class="empty" style="display:none;"><div class="empty-icon">📝</div><div class="empty-text">No posts yet — add one in admin mode</div></div>
+    </div>
+    <div id="blog-post-view" style="display:none;">
+      <button class="back-btn" onclick="closeBlogPost()">← Back to blog</button>
+      <div class="blog-post-full" id="blog-post-content"></div>
+    </div>
+    <div id="blog-adm-bar" style="display:none;margin-top:1.5rem;">
+      <button class="add-btn" style="display:inline-block;" onclick="openBlogModal()">+ Write Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- LOGIN -->
+<div class="mo" id="mo-login" onclick="closeMo(event,'mo-login')">
+  <div class="modal msm">
+    <div class="mhdr"><div class="mtitle">Admin Login</div><button class="mclose" onclick="closeMoId('mo-login')">×</button></div>
+    <div class="mbody">
+      <div class="fg"><div class="flabel">Password</div><input class="fi" id="apw" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="err" id="login-err">Incorrect password</div>
+    </div>
+    <div class="mfooter"><button class="bcancelx" onclick="closeMoId('mo-login')">Cancel</button><button class="bsubmit" onclick="doLogin()">Login</button></div>
+  </div>
+</div>
+
+<!-- TRANSFER -->
+<div class="mo" id="mo-transfer" onclick="closeMo(event,'mo-transfer')">
+  <div class="modal">
+    <div class="mhdr"><div class="mtitle" id="mt-title">Add Transfer</div><button class="mclose" onclick="closeMoId('mo-transfer')">×</button></div>
+    <div class="mbody">
+      <input type="hidden" id="f-eid">
+      <div class="frow">
+        <div class="fg"><div class="flabel">Player name *</div><input class="fi" id="f-name" placeholder="e.g. Dewi Lake"></div>
+        <div class="fg"><div class="flabel">Position *</div>
+          <select class="fsel" id="f-pos"><option value="">Select position</option><optgroup label="Forwards"><option>Loosehead Prop</option><option>Hooker</option><option>Tighthead Prop</option><option>Lock</option><option>Blindside Flanker</option><option>Openside Flanker</option><option>Number 8</option><option>Back row</option></optgroup><optgroup label="Backs"><option>Scrum-half</option><option>Fly-half</option><option>Centre</option><option>Wing</option><option>Fullback</option></optgroup></select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><div class="flabel">From club *</div><input class="fi" id="f-from" placeholder="e.g. Ospreys"></div>
+        <div class="fg"><div class="flabel">To club *</div><input class="fi" id="f-to" placeholder="e.g. Gloucester"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><div class="flabel">League *</div>
+          <select class="fsel" id="f-league"><option value="">Select league</option><option>Premiership</option><option>Top 14</option><option>URC</option><option>Super Rugby</option><option>Japan TL</option></select>
+        </div>
+        <div class="fg"><div class="flabel">Nationality *</div><input class="fi" id="f-nat" placeholder="e.g. Wales"></div>
+      </div>
+      <div class="fg"><div class="flabel">Type *</div>
+        <div class="type-sel"><div class="topt" onclick="selType('confirmed',this)">Signing</div><div class="topt" onclick="selType('departure',this)">Departure</div><div class="topt" onclick="selType('extended',this)">Extended</div></div>
+      </div>
+      <div class="fg"><div class="flabel">Notes</div><input class="fi" id="f-notes" placeholder="e.g. 2-year deal"></div>
+    </div>
+    <div class="mfooter"><button class="bcancelx" onclick="closeMoId('mo-transfer')">Cancel</button><button class="bsubmit" onclick="saveTransfer()">Save</button></div>
+  </div>
+</div>
+
+<!-- MATCH -->
+<div class="mo" id="mo-match" onclick="closeMo(event,'mo-match')">
+  <div class="modal msm">
+    <div class="mhdr"><div class="mtitle" id="mm-title">Edit Match</div><button class="mclose" onclick="closeMoId('mo-match')">×</button></div>
+    <div class="mbody">
+      <input type="hidden" id="m-li"><input type="hidden" id="m-mi">
+      <div class="fg"><div class="flabel">Home team *</div><input class="fi" id="m-home"></div>
+      <div class="fg"><div class="flabel">Away team *</div><input class="fi" id="m-away"></div>
+      <div class="frow">
+        <div class="fg"><div class="flabel">Home score</div><input class="fi" id="m-hs" type="number" placeholder="—"></div>
+        <div class="fg"><div class="flabel">Away score</div><input class="fi" id="m-as" type="number" placeholder="—"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><div class="flabel">Date</div><input class="fi" id="m-date" placeholder="e.g. 15 Mar"></div>
+        <div class="fg"><div class="flabel">Status</div><select class="fsel" id="m-status"><option value="result">Result (FT)</option><option value="upcoming">Upcoming</option></select></div>
+      </div>
+    </div>
+    <div class="mfooter"><button class="bdanger" onclick="deleteMatch()">Delete</button><button class="bcancelx" onclick="closeMoId('mo-match')">Cancel</button><button class="bsubmit" onclick="saveMatch()">Save</button></div>
+  </div>
+</div>
+
+<!-- ROUND -->
+<div class="mo" id="mo-round" onclick="closeMo(event,'mo-round')">
+  <div class="modal msm">
+    <div class="mhdr"><div class="mtitle">Edit Round</div><button class="mclose" onclick="closeMoId('mo-round')">×</button></div>
+    <div class="mbody"><input type="hidden" id="r-li"><div class="fg"><div class="flabel">Round label</div><input class="fi" id="r-label"></div></div>
+    <div class="mfooter"><button class="bcancelx" onclick="closeMoId('mo-round')">Cancel</button><button class="bsubmit" onclick="saveRound()">Save</button></div>
+  </div>
+</div>
+
+<!-- BLOG POST -->
+<div class="mo" id="mo-blog" onclick="closeMo(event,'mo-blog')">
+  <div class="modal" style="width:600px;">
+    <div class="mhdr"><div class="mtitle" id="mb-title">Write Post</div><button class="mclose" onclick="closeMoId('mo-blog')">×</button></div>
+    <div class="mbody">
+      <input type="hidden" id="b-eid">
+      <div class="fg"><div class="flabel">Title *</div><input class="fi" id="b-title" placeholder="e.g. Jac Morgan — The signing of the summer"></div>
+      <div class="frow">
+        <div class="fg"><div class="flabel">League tag</div>
+          <select class="fsel" id="b-league"><option value="">No tag</option><option>Premiership</option><option>Top 14</option><option>URC</option><option>Super Rugby</option><option>Japan TL</option><option>Opinion</option></select>
+        </div>
+        <div class="fg"><div class="flabel">Emoji / icon</div><input class="fi" id="b-emoji" placeholder="e.g. 🏉"></div>
+      </div>
+      <div class="fg"><div class="flabel">Excerpt (shown on card)</div><input class="fi" id="b-excerpt" placeholder="One sentence summary..."></div>
+      <div class="fg full"><div class="flabel">Body *</div><textarea class="fta" id="b-body" style="min-height:160px;" placeholder="Write your post here. Use double line breaks for paragraphs, and ### for subheadings."></textarea></div>
+    </div>
+    <div class="mfooter"><button class="bcancelx" onclick="closeMoId('mo-blog')">Cancel</button><button class="bsubmit" onclick="saveBlogPost()">Publish</button></div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PW='rugbyio2026';
+const SK_T='rio-transfers-v2';
+const SK_R='rio-results-v2';
+const SK_B='rio-blog-v1';
+let isAdmin=false,selType='',activeSt='All',activeLeague='All',searchQ='',currentLeagueIdx=0;
+let _nid=500;const mkid=()=>_nid++;
+
+const FLAGS={England:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',Wales:'🏴󠁧󠁢󠁷󠁬󠁳󠁿',Scotland:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',Ireland:'🇮🇪',France:'🇫🇷','New Zealand':'🇳🇿',Australia:'🇦🇺','South Africa':'🇿🇦',Argentina:'🇦🇷',Fiji:'🇫🇯',Samoa:'🇼🇸',Tonga:'🇹🇴',Japan:'🇯🇵',Italy:'🇮🇹',Georgia:'🇬🇪',Zimbabwe:'🇿🇼',Russia:'🇷🇺',Namibia:'🇳🇦',Romania:'🇷🇴',USA:'🇺🇸',Canada:'🇨🇦',Spain:'🇪🇸','DR Congo':'🇨🇩',Cameroon:'🇨🇲'};
+const NS={England:'ENG',Wales:'WAL',Scotland:'SCO',Ireland:'IRL',France:'FRA','New Zealand':'NZL',Australia:'AUS','South Africa':'RSA',Argentina:'ARG',Fiji:'FIJ',Samoa:'SAM',Tonga:'TON',Japan:'JPN',Italy:'ITA',Georgia:'GEO',Zimbabwe:'ZIM',Russia:'RUS',Namibia:'NAM',USA:'USA','DR Congo':'DRC',Cameroon:'CMR'};
+const gf=n=>FLAGS[n]||'🌍';
+const gn=n=>NS[n]||n.slice(0,3).toUpperCase();
+const fd=d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+
+// ============ TRANSFER DATA ============
+const DEF_T=[
+  // PREMIERSHIP — BATH
+  {id:mkid(),name:'François van Wyk',pos:'Loosehead Prop',from:'Bath',to:'Connacht',league:'Premiership',nat:'South Africa',type:'departure',notes:'',date:'2026-03-01'},
+  {id:mkid(),name:'Thomas du Toit',pos:'Tighthead Prop',from:'Bath',to:'Sharks',league:'Premiership',nat:'South Africa',type:'departure',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:'Alfie Barbeary',pos:'Back row',from:'Bath',to:'Saracens',league:'Premiership',nat:'England',type:'departure',notes:'',date:'2026-02-25'},
+  {id:mkid(),name:'Ethan Staddon',pos:'Back row',from:'Bath',to:'Bristol Bears',league:'Premiership',nat:'England',type:'departure',notes:'',date:'2026-02-18'},
+  {id:mkid(),name:'Will Butt',pos:'Centre',from:'Bath',to:'Exeter Chiefs',league:'Premiership',nat:'England',type:'departure',notes:'',date:'2026-02-15'},
+  // BRISTOL
+  {id:mkid(),name:'Ethan Staddon',pos:'Back row',from:'Bath',to:'Bristol Bears',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-02-18'},
+  {id:mkid(),name:'Louie Sinclair',pos:'Fly-half',from:'Cornish Pirates',to:'Bristol Bears',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-03-02'},
+  {id:mkid(),name:'Tobi Wilson',pos:'Fullback',from:'Ealing Trailfinders',to:'Bristol Bears',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-03-05'},
+  {id:mkid(),name:'James Dun',pos:'Lock',from:'Bristol Bears',to:'Harlequins',league:'Premiership',nat:'England',type:'departure',notes:'',date:'2026-02-22'},
+  {id:mkid(),name:'Sam Wolstenholme',pos:'Scrum-half',from:'Bristol Bears',to:'Exeter Chiefs',league:'Premiership',nat:'England',type:'departure',notes:'',date:'2026-02-19'},
+  // EXETER
+  {id:mkid(),name:'Nika Abuladze',pos:'Tighthead Prop',from:'Montpellier',to:'Exeter Chiefs',league:'Premiership',nat:'Georgia',type:'confirmed',notes:'',date:'2026-03-06'},
+  {id:mkid(),name:'Harry Wilson',pos:'Lock',from:'Saracens',to:'Exeter Chiefs',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-03-04'},
+  {id:mkid(),name:'Sam Wolstenholme',pos:'Scrum-half',from:'Bristol Bears',to:'Exeter Chiefs',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-02-19'},
+  {id:mkid(),name:'Dallas McLeod',pos:'Centre',from:'Crusaders',to:'Exeter Chiefs',league:'Premiership',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-03-01'},
+  {id:mkid(),name:'Will Butt',pos:'Centre',from:'Bath',to:'Exeter Chiefs',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-02-15'},
+  {id:mkid(),name:'Rusi Tuima',pos:'Lock',from:'Exeter Chiefs',to:'Newcastle Red Bulls',league:'Premiership',nat:'Fiji',type:'departure',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:'Len Ikitau',pos:'Centre',from:'Exeter Chiefs',to:'Brumbies',league:'Premiership',nat:'Australia',type:'departure',notes:'',date:'2026-02-14'},
+  {id:mkid(),name:'Josh Hodge',pos:'Fullback',from:'Exeter Chiefs',to:'Newcastle Red Bulls',league:'Premiership',nat:'England',type:'departure',notes:'',date:'2026-02-10'},
+  // GLOUCESTER
+  {id:mkid(),name:'Dewi Lake',pos:'Hooker',from:'Ospreys',to:'Gloucester',league:'Premiership',nat:'Wales',type:'confirmed',notes:'',date:'2026-03-10'},
+  {id:mkid(),name:'Jean Kleyn',pos:'Lock',from:'Munster',to:'Gloucester',league:'Premiership',nat:'South Africa',type:'confirmed',notes:'',date:'2026-03-08'},
+  {id:mkid(),name:'Jac Morgan',pos:'Openside Flanker',from:'Ospreys',to:'Gloucester',league:'Premiership',nat:'Wales',type:'confirmed',notes:'',date:'2026-03-05'},
+  {id:mkid(),name:'Dan Robson',pos:'Scrum-half',from:'Pau',to:'Gloucester',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-03-01'},
+  {id:mkid(),name:'Phil Cokanasiga',pos:'Centre',from:'Ospreys',to:'Gloucester',league:'Premiership',nat:'Fiji',type:'confirmed',notes:'',date:'2026-03-11'},
+  {id:mkid(),name:'Joe Joyce',pos:'Lock',from:'Connacht',to:'Gloucester',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-03-09'},
+  {id:mkid(),name:'Tomos Williams',pos:'Scrum-half',from:'Gloucester',to:'Saracens',league:'Premiership',nat:'Wales',type:'departure',notes:'',date:'2026-02-28'},
+  {id:mkid(),name:'Cam Jordan',pos:'Lock',from:'Gloucester',to:'Newcastle Red Bulls',league:'Premiership',nat:'England',type:'departure',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:'Kirill Gotovtsev',pos:'Loosehead Prop',from:'Gloucester',to:'Retirement',league:'Premiership',nat:'Russia',type:'departure',notes:'',date:'2026-02-15'},
+  {id:mkid(),name:'Lewis Ludlow',pos:'Blindside Flanker',from:'Gloucester',to:'Gloucester',league:'Premiership',nat:'England',type:'extended',notes:'Captain',date:'2026-03-01'},
+  {id:mkid(),name:'Jack Clement',pos:'Back row',from:'Gloucester',to:'Gloucester',league:'Premiership',nat:'England',type:'extended',notes:'',date:'2026-02-25'},
+  {id:mkid(),name:'George Barton',pos:'Fullback',from:'Gloucester',to:'Gloucester',league:'Premiership',nat:'England',type:'extended',notes:'',date:'2026-02-20'},
+  // HARLEQUINS
+  {id:mkid(),name:'James Dun',pos:'Lock',from:'Bristol Bears',to:'Harlequins',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-02-22'},
+  // LEICESTER
+  {id:mkid(),name:'Hanro Liebenberg',pos:'Back row',from:'Leicester Tigers',to:'Bulls',league:'Premiership',nat:'South Africa',type:'departure',notes:'',date:'2026-02-28'},
+  {id:mkid(),name:'Aaron Wainwright',pos:'Back row',from:'Dragons',to:'Leicester Tigers',league:'Premiership',nat:'Wales',type:'confirmed',notes:'',date:'2026-03-02'},
+  // NEWCASTLE
+  {id:mkid(),name:'Rusi Tuima',pos:'Lock',from:'Exeter Chiefs',to:'Newcastle Red Bulls',league:'Premiership',nat:'Fiji',type:'confirmed',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:'Josh Hodge',pos:'Fullback',from:'Exeter Chiefs',to:'Newcastle Red Bulls',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-02-10'},
+  {id:mkid(),name:'Cam Jordan',pos:'Lock',from:'Gloucester',to:'Newcastle Red Bulls',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:'Tomos Williams',pos:'Scrum-half',from:'Gloucester',to:'Saracens',league:'Premiership',nat:'Wales',type:'confirmed',notes:'',date:'2026-02-28'},
+  // SARACENS
+  {id:mkid(),name:'Alfie Barbeary',pos:'Back row',from:'Bath',to:'Saracens',league:'Premiership',nat:'England',type:'confirmed',notes:'',date:'2026-02-25'},
+  {id:mkid(),name:'Tom Willis',pos:'Back row',from:'Saracens',to:'Bordeaux',league:'Premiership',nat:'England',type:'departure',notes:'',date:'2026-02-22'},
+  {id:mkid(),name:'Harry Wilson',pos:'Lock',from:'Saracens',to:'Exeter Chiefs',league:'Premiership',nat:'England',type:'departure',notes:'',date:'2026-03-04'},
+  // TOP 14 — BAYONNE
+  {id:mkid(),name:'Lasha Macharashvili',pos:'Loosehead Prop',from:'Agen',to:'Bayonne',league:'Top 14',nat:'Georgia',type:'confirmed',notes:'',date:'2026-03-05'},
+  {id:mkid(),name:'Brian Alainu\'uese',pos:'Lock',from:'Toulon',to:'Bayonne',league:'Top 14',nat:'Samoa',type:'confirmed',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:'Rob du Preez',pos:'Fly-half',from:'Sale Sharks',to:'Bayonne',league:'Top 14',nat:'South Africa',type:'confirmed',notes:'',date:'2026-03-01'},
+  // BORDEAUX
+  {id:mkid(),name:'Alex Moon',pos:'Lock',from:'Bayonne',to:'Bordeaux',league:'Top 14',nat:'England',type:'confirmed',notes:'',date:'2026-03-06'},
+  {id:mkid(),name:'Tom Willis',pos:'Back row',from:'Saracens',to:'Bordeaux',league:'Top 14',nat:'England',type:'confirmed',notes:'',date:'2026-02-22'},
+  {id:mkid(),name:'Jonny Gray',pos:'Lock',from:'Bordeaux',to:'Retirement',league:'Top 14',nat:'Scotland',type:'departure',notes:'',date:'2026-02-15'},
+  {id:mkid(),name:'Joey Carbery',pos:'Fly-half',from:'Bordeaux',to:'Retirement',league:'Top 14',nat:'Argentina',type:'departure',notes:'',date:'2026-02-12'},
+  // CASTRES
+  {id:mkid(),name:'Dalton Papalii',pos:'Back row',from:'Blues',to:'Castres',league:'Top 14',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-03-04'},
+  // CLERMONT
+  {id:mkid(),name:'Harry Plummer',pos:'Fly-half',from:'Blues',to:'Clermont',league:'Top 14',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-02-08'},
+  // TOULON
+  {id:mkid(),name:'Rabah Slimani',pos:'Tighthead Prop',from:'Leinster',to:'Toulon',league:'Top 14',nat:'France',type:'confirmed',notes:'',date:'2026-03-07'},
+  {id:mkid(),name:'Judicaël Cancoriet',pos:'Back row',from:'La Rochelle',to:'Toulon',league:'Top 14',nat:'France',type:'confirmed',notes:'',date:'2026-03-04'},
+  {id:mkid(),name:'Huw Jones',pos:'Centre',from:'Glasgow Warriors',to:'Toulon',league:'Top 14',nat:'Scotland',type:'confirmed',notes:'',date:'2026-02-28'},
+  {id:mkid(),name:'Brian Alainu\'uese',pos:'Lock',from:'Toulon',to:'Bayonne',league:'Top 14',nat:'Samoa',type:'departure',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:'Enzo Hervé',pos:'Fly-half',from:'Toulon',to:'Castres',league:'Top 14',nat:'France',type:'departure',notes:'Loan',date:'2026-02-10'},
+  {id:mkid(),name:'Gianmarco Lucchesi',pos:'Hooker',from:'Toulon',to:'Toulon',league:'Top 14',nat:'Italy',type:'extended',notes:'Until 2028',date:'2026-03-02'},
+  {id:mkid(),name:'Baptiste Serin',pos:'Scrum-half',from:'Toulon',to:'Toulon',league:'Top 14',nat:'France',type:'extended',notes:'Until 2028',date:'2026-03-01'},
+  {id:mkid(),name:'Ben White',pos:'Scrum-half',from:'Toulon',to:'Toulon',league:'Top 14',nat:'England',type:'extended',notes:'Until 2028',date:'2026-02-28'},
+  // TOULOUSE
+  {id:mkid(),name:'Pita Ahki',pos:'Centre',from:'Toulouse',to:'Blues',league:'Top 14',nat:'New Zealand',type:'departure',notes:'Returns to Super Rugby',date:'2026-02-15'},
+  // URC — BULLS
+  {id:mkid(),name:'Mawande Mdanda',pos:'Loosehead Prop',from:'Sharks',to:'Bulls',league:'URC',nat:'South Africa',type:'confirmed',notes:'',date:'2026-03-05'},
+  {id:mkid(),name:'Hanro Liebenberg',pos:'Back row',from:'Leicester Tigers',to:'Bulls',league:'URC',nat:'South Africa',type:'confirmed',notes:'',date:'2026-02-28'},
+  {id:mkid(),name:'Dylan Maart',pos:'Wing',from:'Stormers',to:'Bulls',league:'URC',nat:'South Africa',type:'confirmed',notes:'',date:'2026-03-02'},
+  {id:mkid(),name:'Wilco Louw',pos:'Tighthead Prop',from:'Bulls',to:'Stormers',league:'URC',nat:'South Africa',type:'departure',notes:'',date:'2026-02-18'},
+  {id:mkid(),name:'Johan Goosen',pos:'Fly-half',from:'Bulls',to:'Retirement',league:'URC',nat:'South Africa',type:'departure',notes:'',date:'2026-02-10'},
+  // CONNACHT
+  {id:mkid(),name:'François van Wyk',pos:'Loosehead Prop',from:'Bath',to:'Connacht',league:'URC',nat:'South Africa',type:'confirmed',notes:'',date:'2026-03-01'},
+  {id:mkid(),name:'Will Connors',pos:'Back row',from:'Leinster',to:'Connacht',league:'URC',nat:'Ireland',type:'confirmed',notes:'',date:'2026-03-03'},
+  {id:mkid(),name:'Ciarán Frawley',pos:'Fly-half',from:'Leinster',to:'Connacht',league:'URC',nat:'Ireland',type:'confirmed',notes:'',date:'2026-03-04'},
+  {id:mkid(),name:'Joe Joyce',pos:'Lock',from:'Connacht',to:'Gloucester',league:'URC',nat:'England',type:'departure',notes:'',date:'2026-03-09'},
+  {id:mkid(),name:'Matt Devine',pos:'Scrum-half',from:'Connacht',to:'Ulster',league:'URC',nat:'Ireland',type:'departure',notes:'',date:'2026-02-25'},
+  // EDINBURGH
+  {id:mkid(),name:'Boan Venter',pos:'Loosehead Prop',from:'Edinburgh',to:'Lions',league:'URC',nat:'South Africa',type:'departure',notes:'',date:'2026-02-15'},
+  {id:mkid(),name:'Ben Healy',pos:'Fly-half',from:'Edinburgh',to:'La Rochelle',league:'URC',nat:'Ireland',type:'departure',notes:'',date:'2026-02-20'},
+  // GLASGOW
+  {id:mkid(),name:'Adam Hastings',pos:'Fly-half',from:'Glasgow Warriors',to:'Montpellier',league:'URC',nat:'Scotland',type:'departure',notes:'',date:'2026-02-18'},
+  {id:mkid(),name:'Huw Jones',pos:'Centre',from:'Glasgow Warriors',to:'Toulon',league:'URC',nat:'Scotland',type:'departure',notes:'',date:'2026-02-28'},
+  // LEINSTER
+  {id:mkid(),name:'Rieko Ioane',pos:'Centre',from:'Blues',to:'Leinster',league:'URC',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:'Rabah Slimani',pos:'Tighthead Prop',from:'Leinster',to:'Toulon',league:'URC',nat:'France',type:'departure',notes:'',date:'2026-03-07'},
+  {id:mkid(),name:'Will Connors',pos:'Back row',from:'Leinster',to:'Connacht',league:'URC',nat:'Ireland',type:'departure',notes:'',date:'2026-03-03'},
+  // ULSTER
+  {id:mkid(),name:'Eli Snyman',pos:'Lock',from:'Benetton',to:'Ulster',league:'URC',nat:'Zimbabwe',type:'confirmed',notes:'',date:'2026-03-06'},
+  {id:mkid(),name:'Ben Donnell',pos:'Back row',from:'Cardiff',to:'Ulster',league:'URC',nat:'England',type:'confirmed',notes:'',date:'2026-03-03'},
+  {id:mkid(),name:'Matt Devine',pos:'Scrum-half',from:'Connacht',to:'Ulster',league:'URC',nat:'Ireland',type:'confirmed',notes:'',date:'2026-02-25'},
+  {id:mkid(),name:'Angus Bell',pos:'Loosehead Prop',from:'Ulster',to:'Waratahs',league:'URC',nat:'Australia',type:'departure',notes:'',date:'2026-02-18'},
+  {id:mkid(),name:'Tom Stewart',pos:'Hooker',from:'Ulster',to:'Ulster',league:'URC',nat:'Ireland',type:'extended',notes:'Until 2028',date:'2026-03-05'},
+  {id:mkid(),name:'Nathan Doak',pos:'Scrum-half',from:'Ulster',to:'Ulster',league:'URC',nat:'Ireland',type:'extended',notes:'Until 2028',date:'2026-03-03'},
+  {id:mkid(),name:'Cormac Izuchukwu',pos:'Lock',from:'Ulster',to:'Ulster',league:'URC',nat:'Ireland',type:'extended',notes:'Until 2028',date:'2026-02-28'},
+  {id:mkid(),name:'Jude Postlethwaite',pos:'Centre',from:'Ulster',to:'Ulster',league:'URC',nat:'Ireland',type:'extended',notes:'Until 2029',date:'2026-02-22'},
+  // SUPER RUGBY — BLUES
+  {id:mkid(),name:'Bradley Slater',pos:'Hooker',from:'Chiefs',to:'Blues',league:'Super Rugby',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-03-08'},
+  {id:mkid(),name:'Flyn Yates',pos:'Loosehead Prop',from:'Manawatu',to:'Blues',league:'Super Rugby',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-03-05'},
+  {id:mkid(),name:'Terrell Peita',pos:'Back row',from:'Northland',to:'Blues',league:'Super Rugby',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-03-04'},
+  {id:mkid(),name:'Cody Vai',pos:'Wing',from:'Auckland',to:'Blues',league:'Super Rugby',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-03-06'},
+  {id:mkid(),name:'Kade Banks',pos:'Fullback',from:'North Harbour',to:'Blues',league:'Super Rugby',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-03-04'},
+  {id:mkid(),name:'Pita Ahki',pos:'Centre',from:'Toulouse',to:'Blues',league:'Super Rugby',nat:'New Zealand',type:'confirmed',notes:'Returns from Top 14',date:'2026-02-15'},
+  {id:mkid(),name:'Rieko Ioane',pos:'Centre',from:'Blues',to:'Leinster',league:'Super Rugby',nat:'New Zealand',type:'departure',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:"Mark Tele'a",pos:'Wing',from:'Blues',to:'Toyota Verblitz',league:'Super Rugby',nat:'New Zealand',type:'departure',notes:'',date:'2026-02-12'},
+  {id:mkid(),name:'Harry Plummer',pos:'Fly-half',from:'Blues',to:'Clermont',league:'Super Rugby',nat:'New Zealand',type:'departure',notes:'',date:'2026-02-08'},
+  {id:mkid(),name:'Ricky Riccitelli',pos:'Hooker',from:'Blues',to:'Montpellier',league:'Super Rugby',nat:'South Africa',type:'departure',notes:'',date:'2026-01-28'},
+  {id:mkid(),name:'Dalton Papalii',pos:'Back row',from:'Blues',to:'Castres',league:'Super Rugby',nat:'New Zealand',type:'departure',notes:'',date:'2026-03-04'},
+  // BRUMBIES
+  {id:mkid(),name:'Tane Edmed',pos:'Fly-half',from:'Waratahs',to:'Brumbies',league:'Super Rugby',nat:'Australia',type:'confirmed',notes:'',date:'2026-03-06'},
+  {id:mkid(),name:'Len Ikitau',pos:'Centre',from:'Exeter Chiefs',to:'Brumbies',league:'Super Rugby',nat:'Australia',type:'confirmed',notes:'',date:'2026-02-14'},
+  {id:mkid(),name:'Noah Lolesio',pos:'Fly-half',from:'Brumbies',to:'Toyota Industries',league:'Super Rugby',nat:'Australia',type:'departure',notes:'',date:'2026-02-10'},
+  {id:mkid(),name:'Tom Hooper',pos:'Back row',from:'Brumbies',to:'Exeter Chiefs',league:'Super Rugby',nat:'Australia',type:'departure',notes:'',date:'2026-02-08'},
+  // CHIEFS
+  {id:mkid(),name:'Lalakai Foketi',pos:'Centre',from:'Waratahs',to:'Chiefs',league:'Super Rugby',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-03-07'},
+  {id:mkid(),name:'Kyren Taumoefolau',pos:'Wing',from:'Moana Pasifika',to:'Chiefs',league:'Super Rugby',nat:'Tonga',type:'confirmed',notes:'',date:'2026-03-05'},
+  {id:mkid(),name:'Bradley Slater',pos:'Hooker',from:'Chiefs',to:'Blues',league:'Super Rugby',nat:'New Zealand',type:'departure',notes:'',date:'2026-03-08'},
+  {id:mkid(),name:'Anton Lienert-Brown',pos:'Centre',from:'Chiefs',to:'Kobe Steelers',league:'Super Rugby',nat:'New Zealand',type:'departure',notes:'',date:'2026-02-20'},
+  // JAPAN TL — KOBE STEELERS
+  {id:mkid(),name:'Brodie Retallick',pos:'Lock',from:'Kobe Steelers',to:'Kobe Steelers',league:'Japan TL',nat:'New Zealand',type:'extended',notes:'',date:'2026-03-09'},
+  {id:mkid(),name:'Ardie Savea',pos:'Number 8',from:'Kobe Steelers',to:'Kobe Steelers',league:'Japan TL',nat:'New Zealand',type:'extended',notes:'',date:'2026-03-07'},
+  {id:mkid(),name:'Siosaia Fifita',pos:'Number 8',from:'Toshiba Brave Lupus',to:'Kobe Steelers',league:'Japan TL',nat:'Tonga',type:'confirmed',notes:'',date:'2026-02-28'},
+  {id:mkid(),name:'Anton Lienert-Brown',pos:'Centre',from:'Chiefs',to:'Kobe Steelers',league:'Japan TL',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-02-20'},
+  {id:mkid(),name:"Mark Tele'a",pos:'Wing',from:'Blues',to:'Toyota Verblitz',league:'Japan TL',nat:'New Zealand',type:'confirmed',notes:'',date:'2026-02-12'},
+];
+
+const LEAGUES=[
+  {name:'Premiership',short:'PRL',color:'#C1272D',teams:['Bath','Bristol Bears','Exeter Chiefs','Gloucester','Harlequins','Leicester Tigers','Newcastle Red Bulls','Northampton Saints','Sale Sharks','Saracens']},
+  {name:'Top 14',short:'TOP14',color:'#3A7FD5',teams:['Bayonne','Bordeaux','Castres','Clermont','La Rochelle','Lyon','Montauban','Montpellier','Stade Français','Pau','Perpignan','Racing 92','Toulon','Toulouse']},
+  {name:'URC',short:'URC',color:'#1D9E75',teams:['Benetton','Bulls','Cardiff','Connacht','Dragons','Edinburgh','Glasgow Warriors','Leinster','Lions','Munster','Ospreys','Scarlets','Sharks','Stormers','Ulster','Zebre']},
+  {name:'Super Rugby',short:'SRP',color:'#666',teams:['Blues','Brumbies','Chiefs','Crusaders','Fijian Drua','Highlanders','Hurricanes','Moana Pasifika','Reds','Waratahs','Western Force']},
+  {name:'Japan TL',short:'JTL',color:'#E60026',teams:['BlackRams Tokyo','Canon Eagles','Kobelco Kobe Steelers','Kubota Spears','Mie Honda Heat','Mitsubishi Dynaboars','Saitama Wild Knights','Toyota Industries','Toyota Verblitz','Tokyo Sungoliath','Toshiba Brave Lupus','Urayasu D-Rocks']},
+];
+
+const DEF_R=[
+  {league:'Premiership',color:'#C1272D',round:'Round 18',matches:[
+    {home:'Bristol Bears',away:'Bath',hs:22,as:36,date:'7 Mar',upcoming:false},
+    {home:'Saracens',away:'Gloucester',hs:32,as:17,date:'7 Mar',upcoming:false},
+    {home:'Exeter Chiefs',away:'Sale Sharks',hs:28,as:24,date:'8 Mar',upcoming:false},
+    {home:'Leicester Tigers',away:'Northampton Saints',hs:19,as:23,date:'8 Mar',upcoming:false},
+    {home:'Newcastle Red Bulls',away:'Harlequins',hs:14,as:31,date:'8 Mar',upcoming:false},
+  ]},
+  {league:'Top 14',color:'#3A7FD5',round:'Round 18',matches:[
+    {home:'Clermont',away:'Bayonne',hs:38,as:15,date:'28 Feb',upcoming:false},
+    {home:'Lyon',away:'Toulon',hs:13,as:13,date:'28 Feb',upcoming:false},
+    {home:'Montpellier',away:'Racing 92',hs:41,as:17,date:'1 Mar',upcoming:false},
+    {home:'Toulouse',away:'Montauban',hs:68,as:13,date:'1 Mar',upcoming:false},
+    {home:'Pau',away:'Bordeaux',hs:39,as:17,date:'1 Mar',upcoming:false},
+    {home:'Castres',away:'La Rochelle',hs:26,as:31,date:'1 Mar',upcoming:false},
+  ]},
+  {league:'URC',color:'#1D9E75',round:'Round 12',matches:[
+    {home:'Cardiff',away:'Leinster',hs:8,as:7,date:'27 Feb',upcoming:false},
+    {home:'Edinburgh',away:'Scarlets',hs:24,as:19,date:'27 Feb',upcoming:false},
+    {home:'Lions',away:'Stormers',hs:24,as:10,date:'28 Feb',upcoming:false},
+    {home:'Connacht',away:'Glasgow Warriors',hs:15,as:10,date:'28 Feb',upcoming:false},
+    {home:'Bulls',away:'Sharks',hs:41,as:12,date:'28 Feb',upcoming:false},
+    {home:'Munster',away:'Zebre',hs:21,as:7,date:'28 Feb',upcoming:false},
+    {home:'Ospreys',away:'Ulster',hs:21,as:10,date:'28 Feb',upcoming:false},
+  ]},
+  {league:'Super Rugby',color:'#666',round:'Round 5',matches:[
+    {home:'Blues',away:'Moana Pasifika',hs:43,as:7,date:'15 Mar',upcoming:false},
+    {home:'Hurricanes',away:'Western Force',hs:null,as:null,date:'13 Mar',upcoming:true},
+    {home:'Crusaders',away:'Highlanders',hs:null,as:null,date:'14 Mar',upcoming:true},
+    {home:'Reds',away:'Waratahs',hs:null,as:null,date:'14 Mar',upcoming:true},
+    {home:'Fijian Drua',away:'Brumbies',hs:null,as:null,date:'14 Mar',upcoming:true},
+  ]},
+  {league:'Japan TL',color:'#E60026',round:'Round 11',matches:[
+    {home:'Toyota Verblitz',away:'Urayasu D-Rocks',hs:59,as:19,date:'15 Mar',upcoming:false},
+    {home:'Tokyo Sungoliath',away:'Toshiba Brave Lupus',hs:60,as:21,date:'15 Mar',upcoming:false},
+    {home:'Kobelco Kobe Steelers',away:'Mitsubishi Dynaboars',hs:61,as:10,date:'14 Mar',upcoming:false},
+    {home:'Kubota Spears',away:'Saitama Wild Knights',hs:30,as:32,date:'14 Mar',upcoming:false},
+    {home:'Canon Eagles',away:'Mie Honda Heat',hs:31,as:26,date:'14 Mar',upcoming:false},
+  ]},
+];
+
+const DEF_B=[
+  {id:mkid(),title:"Jac Morgan — the signing of the summer?",league:"Premiership",emoji:"🏴󠁧󠁢󠁷󠁬󠁳󠁿",excerpt:"Gloucester have pulled off one of the most exciting Premiership signings in years with the arrival of Wales openside flanker Jac Morgan.",body:"### The Morgan Factor\n\nWhen Gloucester confirmed the signing of Jac Morgan from Ospreys, it sent a signal to the rest of the Premiership: the Cherry and Whites mean business this window.\n\nMorgan, just 26, has established himself as one of the best opensides in the northern hemisphere. His ability at the breakdown, his ball-carrying and his lineout work make him a complete modern flanker.\n\n### What it means for Gloucester\n\nTeam up Morgan with Lewis Ludlow — who has penned a new deal — and Gloucester suddenly have one of the most fearsome back rows in the league. Throw in the arrivals of Dewi Lake, Jean Kleyn and the experienced Dan Robson, and George Skivington's squad is looking genuinely competitive.\n\n### The bigger picture\n\nThis is a window that could define Gloucester's ambitions. Three quality ins from Ospreys alone suggests a strong relationship with the Welsh region — and for Ospreys fans, it raises questions about player retention.",author:"Rugby Ins & Outs",date:"2026-03-12"},
+  {id:mkid(),title:"Super Rugby 2026 — the transfer story so far",league:"Super Rugby",emoji:"🇳🇿",excerpt:"Rieko Ioane to Leinster, Mark Tele'a to Toyota and a flood of talent heading to Japan. We examine what the player movement tells us about the state of Southern Hemisphere rugby.",body:"### The Japan drain continues\n\nIf there is one defining theme of the 2025/26 Super Rugby transfer window, it is the continued march of New Zealand talent towards Japan Rugby League One.\n\nMark Tele'a, one of the Blues' most dynamic attacking threats, has joined Toyota Verblitz. Anton Lienert-Brown, a Chiefs stalwart, heads to Kobelco Kobe Steelers. The financial muscle of the Japanese clubs remains unmatched.\n\n### Leinster land Ioane\n\nThe headline move in the European direction is Rieko Ioane's switch to Leinster. The Blues' centre brings pace, power and All Blacks pedigree to an already stacked Leinster backline. Expect fireworks in the URC.\n\n### Blues rebuild smartly\n\nDespite the exits, the Blues have refreshed intelligently — Bradley Slater from Chiefs, Pita Ahki returning from Toulouse, and a clutch of exciting young New Zealanders coming through. Leon MacDonald's squad looks balanced.",author:"Rugby Ins & Outs",date:"2026-03-10"},
+  {id:mkid(),title:"URC window — Ulster and Connacht make bold moves",league:"URC",emoji:"🇮🇪",excerpt:"Ulster's quiet but effective recruitment stands in contrast to Connacht's bold raid on Leinster. Two provinces with very different strategies.",body:"### Ulster: quality over quantity\n\nThree ins, one out. On paper Ulster's window looks modest — but look closer and you see genuine quality. Eli Snyman from Benetton is a powerful addition at lock, Ben Donnell brings Premiership experience from Cardiff, and Matt Devine provides scrum-half cover ahead of Nathan Doak.\n\nPerhaps more importantly, Ulster have tied down their core — 10 contract extensions including Doak, Tom Stewart, Cormac Izuchukwu and Jude Postlethwaite. This is a squad being built for longevity.\n\n### Connacht's Leinster raid\n\nConnacht have done something unusual — raided their provincial rivals. Will Connors and Ciarán Frawley both arrive from Leinster, adding international-quality depth to Andy Friend's squad.\n\nThe departure of Matt Devine to Ulster and Joe Joyce to Gloucester will sting, but the incomings look strong.",author:"Rugby Ins & Outs",date:"2026-03-08"},
+];
+
+let transfers=[...DEF_T];
+let results=[...DEF_R.map(l=>({...l,matches:l.matches.map(m=>({...m}))}))];
+let blogs=[...DEF_B];
+
+async function loadStorage(){
+  try{const r=await window.storage.get(SK_T,true);if(r)transfers=JSON.parse(r.value);}catch(e){}
+  try{const r=await window.storage.get(SK_R,true);if(r)results=JSON.parse(r.value);}catch(e){}
+  try{const r=await window.storage.get(SK_B,true);if(r)blogs=JSON.parse(r.value);}catch(e){}
+  renderAll();
+}
+async function saveT(){try{await window.storage.set(SK_T,JSON.stringify(transfers),true);}catch(e){}}
+async function saveR(){try{await window.storage.set(SK_R,JSON.stringify(results),true);}catch(e){}}
+async function saveB(){try{await window.storage.set(SK_B,JSON.stringify(blogs),true);}catch(e){}}
+
+// ========== ADMIN ==========
+function toggleAdmin(){if(isAdmin)logoutAdmin();else document.getElementById('mo-login').classList.add('open'),setTimeout(()=>document.getElementById('apw').focus(),80);}
+function logoutAdmin(){isAdmin=false;document.getElementById('adm-btn').classList.remove('on');document.getElementById('adm-btn').textContent='Admin';document.getElementById('adm-banner').style.display='none';document.getElementById('add-t-btn').style.display='none';document.getElementById('blog-adm-bar').style.display='none';renderAll();}
+function doLogin(){const pw=document.getElementById('apw').value;if(pw===ADMIN_PW){closeMoId('mo-login');document.getElementById('apw').value='';isAdmin=true;document.getElementById('adm-btn').classList.add('on');document.getElementById('adm-btn').textContent='Admin ✓';document.getElementById('adm-banner').style.display='flex';document.getElementById('add-t-btn').style.display='inline-block';document.getElementById('blog-adm-bar').style.display='block';renderAll();}else{document.getElementById('login-err').style.display='block';setTimeout(()=>document.getElementById('login-err').style.display='none',2e3);}}
+
+// ========== NAVIGATION ==========
+function goPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.getElementById('lbar').style.display=id==='transfers'?'flex':'none';
+  if(id==='league')renderLeaguePage(currentLeagueIdx);
+}
+
+// ========== TRANSFERS ==========
+function getFiltered(){
+  let f=transfers.filter(t=>{
+    const ms=activeSt==='All'||t.type===activeSt;
+    const ml=activeLeague==='All'||t.league===activeLeague;
+    const q=searchQ.toLowerCase();
+    const mq=!q||t.name.toLowerCase().includes(q)||t.from.toLowerCase().includes(q)||t.to.toLowerCase().includes(q);
+    return ms&&ml&&mq;
+  });
+  return f.sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,10);
+}
+function renderTransfers(){
+  const f=getFiltered();
+  const feed=document.getElementById('tfeed');
+  const empty=document.getElementById('tempty');
+  const ll=activeLeague==='All'?'all leagues':activeLeague;
+  document.getElementById('feed-sub').textContent=`Showing 10 most recent · ${ll}`;
+  if(!f.length){feed.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  feed.innerHTML=f.map(t=>{
+    const clubs=t.type==='extended'?`<span>${t.to}</span><span class="carrow" style="font-size:11px;">↺</span><span style="color:var(--muted);">Extended</span>`:`<span>${t.from}</span><span class="carrow">→</span><span>${t.to}</span>`;
+    const label=t.type==='confirmed'?'Signing':t.type==='departure'?'Departure':'Extended';
+    const adminHtml=isAdmin?`<div class="adm-acts"><button class="ibtn ed" onclick="editTransfer(${t.id})">Edit</button><button class="ibtn dl" onclick="delTransfer(${t.id})">Del</button></div>`:'';
+    return`<div class="tcard ${t.type}"><div class="flag-av"><div>${gf(t.nat)}</div><div class="flag-nat">${gn(t.nat)}</div></div><div style="min-width:0;"><div class="cname">${t.name}</div><div class="cdetails"><span class="cpos">${t.pos}</span><span class="cclubs">${clubs}</span></div><div class="cmeta">${t.league}${t.notes?' · '+t.notes:''}</div></div><div class="cright"><div class="sbadge ${t.type}">${label}</div><div class="cdate">${fd(t.date)}</div>${adminHtml}</div></div>`;
+  }).join('');
+  renderSidebar();
+}
+function renderSidebar(){
+  const recent=[...transfers].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6);
+  document.getElementById('recent-list').innerHTML=recent.map(t=>`<div class="ri"><div style="font-size:18px;">${gf(t.nat)}</div><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</div><div style="font-size:11px;color:var(--muted);">${t.from} → ${t.to}</div></div><div class="sbadge ${t.type}" style="font-size:9px;padding:2px 5px;">${t.type==='confirmed'?'In':t.type==='departure'?'Out':'Ext'}</div></div>`).join('');
+}
+function fStatus(s,el){activeSt=s;document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderTransfers();}
+function fLeague(l,el){activeLeague=l;document.querySelectorAll('.league-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderTransfers();}
+function fSearch(q){searchQ=q;renderTransfers();}
+function delTransfer(id){transfers=transfers.filter(t=>t.id!==id);renderTransfers();saveT();}
+function openTModal(){
+  document.getElementById('mt-title').textContent='Add Transfer';
+  document.getElementById('f-eid').value='';
+  ['f-name','f-from','f-to','f-nat','f-notes'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('f-pos').value='';document.getElementById('f-league').value='';
+  selType='';document.querySelectorAll('.topt').forEach(o=>o.className='topt');
+  document.getElementById('mo-transfer').classList.add('open');
+}
+function editTransfer(id){
+  const t=transfers.find(x=>x.id===id);if(!t)return;
+  document.getElementById('mt-title').textContent='Edit Transfer';
+  document.getElementById('f-eid').value=id;
+  document.getElementById('f-name').value=t.name;document.getElementById('f-pos').value=t.pos;
+  document.getElementById('f-from').value=t.from;document.getElementById('f-to').value=t.to;
+  document.getElementById('f-league').value=t.league;document.getElementById('f-nat').value=t.nat;
+  document.getElementById('f-notes').value=t.notes||'';
+  selType=t.type;document.querySelectorAll('.topt').forEach(o=>o.className='topt');
+  const map={confirmed:'sc',departure:'sd',extended:'se'};
+  document.querySelector(`.topt[onclick*="${t.type}"]`).classList.add(map[t.type]);
+  document.getElementById('mo-transfer').classList.add('open');
+}
+function selType(t,el){selType=t;document.querySelectorAll('.topt').forEach(o=>o.className='topt');const m={confirmed:'sc',departure:'sd',extended:'se'};el.classList.add(m[t]);}
+function saveTransfer(){
+  const name=document.getElementById('f-name').value.trim();
+  const pos=document.getElementById('f-pos').value;
+  const from=document.getElementById('f-from').value.trim();
+  const to=document.getElementById('f-to').value.trim();
+  const league=document.getElementById('f-league').value;
+  const nat=document.getElementById('f-nat').value.trim();
+  if(!name||!pos||!from||!to||!league||!nat||!selType)return;
+  const eid=document.getElementById('f-eid').value;
+  if(eid){const i=transfers.findIndex(t=>t.id==eid);if(i>-1)transfers[i]={...transfers[i],name,pos,from,to,league,nat,type:selType,notes:document.getElementById('f-notes').value.trim()};}
+  else transfers.unshift({id:mkid(),name,pos,from,to,league,nat,type:selType,notes:document.getElementById('f-notes').value.trim(),date:new Date().toISOString().split('T')[0]});
+  closeMoId('mo-transfer');renderTransfers();saveT();
+}
+
+// ========== RESULTS ==========
+function renderResults(){
+  document.getElementById('results-grid').innerHTML=results.map((l,li)=>`
+    <div class="lblock">
+      <div class="lblock-hdr" style="border-left:3px solid ${l.color};">
+        <div class="lblock-name" style="color:${l.color};">${l.league}</div>
+        <div class="lblock-right"><span class="lblock-round">${l.round}</span>${isAdmin?`<button class="edit-rnd" style="display:inline-block;" onclick="openRndEdit(${li})">Edit round</button>`:''}</div>
+      </div>
+      ${l.matches.map((m,mi)=>{
+        const hw=m.hs>m.as,draw=m.hs===m.as;
+        const sc=m.upcoming?`<div style="text-align:center;"><div style="font-size:11px;color:#555;font-family:'Barlow Condensed',sans-serif;">vs</div><div class="mdate">${m.date}</div></div>`:`<div style="text-align:center;"><div class="sblock"><span class="sc ${hw||draw?'w':'l'}">${m.hs}</span><span class="ssep">–</span><span class="sc ${!hw||draw?'w':'l'}">${m.as}</span></div><div class="mdate">${m.date}</div></div>`;
+        return`<div class="mrow"><div style="text-align:right;"><div class="tname ${!m.upcoming&&!hw&&!draw?'loser':''}">${m.home}</div></div>${sc}<div><div class="tname ${!m.upcoming&&hw&&!draw?'loser':''}">${m.away}</div></div>${isAdmin?`<button class="edit-m" style="display:inline-block;" onclick="openMEdit(${li},${mi})">edit</button>`:''}</div>`;
+      }).join('')}
+      ${isAdmin?`<button class="add-m-btn" style="display:block;" onclick="openMAdd(${li})">+ Add match</button>`:''}
+    </div>`).join('');
+}
+function openMEdit(li,mi){const m=results[li].matches[mi];document.getElementById('mm-title').textContent='Edit Match';document.getElementById('m-li').value=li;document.getElementById('m-mi').value=mi;document.getElementById('m-home').value=m.home;document.getElementById('m-away').value=m.away;document.getElementById('m-hs').value=m.hs??'';document.getElementById('m-as').value=m.as??'';document.getElementById('m-date').value=m.date||'';document.getElementById('m-status').value=m.upcoming?'upcoming':'result';document.getElementById('mo-match').classList.add('open');}
+function openMAdd(li){document.getElementById('mm-title').textContent='Add Match';document.getElementById('m-li').value=li;document.getElementById('m-mi').value='';['m-home','m-away','m-hs','m-as','m-date'].forEach(i=>document.getElementById(i).value='');document.getElementById('m-status').value='result';document.getElementById('mo-match').classList.add('open');}
+function saveMatch(){const li=+document.getElementById('m-li').value;const mi=document.getElementById('m-mi').value;const home=document.getElementById('m-home').value.trim();const away=document.getElementById('m-away').value.trim();const hs=document.getElementById('m-hs').value;const as_=document.getElementById('m-as').value;const date=document.getElementById('m-date').value.trim();const upcoming=document.getElementById('m-status').value==='upcoming';if(!home||!away)return;const match={home,away,hs:hs===''?null:+hs,as:as_===''?null:+as_,date,upcoming};if(mi==='')results[li].matches.push(match);else results[li].matches[+mi]=match;closeMoId('mo-match');renderResults();saveR();}
+function deleteMatch(){const li=+document.getElementById('m-li').value;const mi=document.getElementById('m-mi').value;if(mi!=='')results[li].matches.splice(+mi,1);closeMoId('mo-match');renderResults();saveR();}
+function openRndEdit(li){document.getElementById('r-li').value=li;document.getElementById('r-label').value=results[li].round;document.getElementById('mo-round').classList.add('open');}
+function saveRound(){const li=+document.getElementById('r-li').value;const v=document.getElementById('r-label').value.trim();if(v)results[li].round=v;closeMoId('mo-round');renderResults();saveR();}
+
+// ========== LEAGUE PAGE ==========
+function renderLeaguePage(li){
+  currentLeagueIdx=li;
+  const league=LEAGUES[li];
+  // header
+  document.getElementById('league-hdr').innerHTML=`
+    <div class="league-badge" style="background:${league.color}22;border:1px solid ${league.color}44;color:${league.color};">${league.short}</div>
+    <div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;letter-spacing:0.03em;text-transform:uppercase;">${league.name}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:3px;">2025/26 season · ${league.teams.length} clubs · Transfer activity</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Switch league</div>
+      <div class="league-switcher">${LEAGUES.map((l,i)=>`<div class="ls-btn${i===li?' active':''}" onclick="renderLeaguePage(${i})" title="${l.name}">${l.short}</div>`).join('')}</div>
+    </div>`;
+  // chips
+  document.getElementById('team-chips').innerHTML=`<div style="font-size:11px;color:var(--muted);width:100%;margin-bottom:4px;">Jump to a team</div>`+league.teams.map((t,i)=>`<div class="tchip" id="chip-${i}" onclick="scrollToTeam(${i})">${t}</div>`).join('');
+  // teams
+  document.getElementById('teams-container').innerHTML=league.teams.map((team,ti)=>{
+    const ins=transfers.filter(t=>t.league===league.name&&t.to===team&&t.type==='confirmed');
+    const outs=transfers.filter(t=>t.league===league.name&&t.from===team&&t.type==='departure');
+    const exts=transfers.filter(t=>t.league===league.name&&(t.to===team||t.from===team)&&t.type==='extended');
+    const initials=team.split(' ').map(w=>w[0]).join('').slice(0,3).toUpperCase();
+    return`<div class="team-section" id="team-${ti}">
+      <div class="tsec-hdr" onclick="toggleTeam(${ti})">
+        <div class="team-initial" style="background:${league.color}22;color:${league.color};border:1px solid ${league.color}44;">${initials}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;">${team}</div>
+        <div class="tsec-badges">
+          ${ins.length?`<div class="in-badge">↓ ${ins.length} in</div>`:''}
+          ${outs.length?`<div class="out-badge">↑ ${outs.length} out</div>`:''}
+          ${exts.length?`<div class="ext-badge">↺ ${exts.length} ext</div>`:''}
+          ${!ins.length&&!outs.length&&!exts.length?`<div style="font-size:11px;color:#444;">No activity</div>`:''}
+        </div>
+        <div class="toggle-icon">∨</div>
+      </div>
+      <div class="tsec-body" id="tbody-${ti}">
+        <div class="tsec-col">
+          <div class="col-title in">Arrivals (${ins.length})</div>
+          ${ins.length?ins.map(t=>`<div class="player-row"><div class="pflag">${gf(t.nat)}</div><div class="pinfo"><div class="pname">${t.name}</div><div class="pdetail">${t.pos} · From ${t.from}</div></div></div>`).join(''):`<div class="empty-col">No signings</div>`}
+        </div>
+        <div class="tsec-col">
+          <div class="col-title out">Departures (${outs.length})</div>
+          ${outs.length?outs.map(t=>`<div class="player-row"><div class="pflag">${gf(t.nat)}</div><div class="pinfo"><div class="pname">${t.name}</div><div class="pdetail">${t.pos} · To ${t.to}</div></div></div>`).join(''):`<div class="empty-col">No departures</div>`}
+        </div>
+        <div class="tsec-col">
+          <div class="col-title ext">Extensions (${exts.length})</div>
+          ${exts.length?exts.map(t=>`<div class="player-row"><div class="pflag">${gf(t.nat)}</div><div class="pinfo"><div class="pname">${t.name}</div><div class="pdetail">${t.pos}${t.notes?' · '+t.notes:''}</div></div></div>`).join(''):`<div class="empty-col">No extensions</div>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleTeam(ti){
+  const body=document.getElementById(`tbody-${ti}`);
+  const hdr=document.getElementById(`team-${ti}`).querySelector('.toggle-icon');
+  const open=body.classList.toggle('open');
+  hdr.textContent=open?'∧':'∨';
+  if(open){document.querySelectorAll('.tchip').forEach((c,i)=>{c.classList.toggle('active',i===ti);});}
+}
+function scrollToTeam(ti){
+  const el=document.getElementById(`team-${ti}`);
+  if(el){el.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>{const body=document.getElementById(`tbody-${ti}`);if(!body.classList.contains('open'))toggleTeam(ti);},300);}
+}
+
+// ========== BLOG ==========
+const LTAG_COLS={Premiership:'#C1272D','Top 14':'#3A7FD5',URC:'#1D9E75','Super Rugby':'#666','Japan TL':'#E60026',Opinion:'#7F77DD'};
+function parseBody(body){return body.split('\n\n').map(p=>p.startsWith('###')?`<h3>${p.replace('### ','')}</h3>`:`<p>${p}</p>`).join('');}
+function renderBlog(){
+  const grid=document.getElementById('blog-grid');
+  const empty=document.getElementById('blog-empty');
+  const sorted=[...blogs].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(!sorted.length){grid.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  grid.innerHTML=sorted.map(b=>{
+    const col=LTAG_COLS[b.league]||'#888';
+    const tag=b.league?`<div class="blog-league-tag" style="background:${col}22;color:${col};border:1px solid ${col}44;">${b.league}</div>`:'';
+    return`<div class="blog-card" onclick="openBlogPost(${b.id})">
+      <div class="blog-thumb">${b.emoji||'🏉'}</div>
+      <div class="blog-body">${tag}<div class="blog-title">${b.title}</div><div class="blog-excerpt">${b.excerpt||''}</div><div class="blog-meta"><span>${b.author||'Rugby Ins & Outs'}</span><span>·</span><span>${fd(b.date)}</span></div></div>
+    </div>`;
+  }).join('');
+  document.getElementById('blog-adm-bar').style.display=isAdmin?'block':'none';
+}
+function openBlogPost(id){
+  const b=blogs.find(x=>x.id===id);if(!b)return;
+  const col=LTAG_COLS[b.league]||'#888';
+  const tag=b.league?`<div class="blog-league-tag" style="background:${col}22;color:${col};border:1px solid ${col}44;margin-bottom:12px;">${b.league}</div>`:'';
+  const adminHtml=isAdmin?`<div style="display:flex;gap:8px;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #2a2a2a;"><button class="ibtn ed" onclick="editBlogPost(${b.id})">Edit post</button><button class="ibtn dl" onclick="delBlogPost(${b.id})">Delete</button></div>`:'';
+  document.getElementById('blog-post-content').innerHTML=`${tag}<div class="blog-post-title">${b.title}</div><div class="blog-post-meta">${b.author||'Rugby Ins & Outs'} · ${fd(b.date)}</div><div class="blog-post-body">${parseBody(b.body)}</div>${adminHtml}`;
+  document.getElementById('blog-list-view').style.display='none';
+  document.getElementById('blog-post-view').style.display='block';
+}
+function closeBlogPost(){document.getElementById('blog-list-view').style.display='block';document.getElementById('blog-post-view').style.display='none';}
+function openBlogModal(){
+  document.getElementById('mb-title').textContent='Write Post';
+  document.getElementById('b-eid').value='';
+  ['b-title','b-excerpt','b-body','b-emoji'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('b-league').value='';
+  document.getElementById('mo-blog').classList.add('open');
+}
+function editBlogPost(id){
+  const b=blogs.find(x=>x.id===id);if(!b)return;
+  document.getElementById('mb-title').textContent='Edit Post';
+  document.getElementById('b-eid').value=id;
+  document.getElementById('b-title').value=b.title;
+  document.getElementById('b-excerpt').value=b.excerpt||'';
+  document.getElementById('b-body').value=b.body;
+  document.getElementById('b-emoji').value=b.emoji||'';
+  document.getElementById('b-league').value=b.league||'';
+  document.getElementById('mo-blog').classList.add('open');
+}
+function delBlogPost(id){blogs=blogs.filter(b=>b.id!==id);saveB();closeBlogPost();renderBlog();}
+function saveBlogPost(){
+  const title=document.getElementById('b-title').value.trim();
+  const body=document.getElementById('b-body').value.trim();
+  if(!title||!body)return;
+  const eid=document.getElementById('b-eid').value;
+  const obj={title,body,excerpt:document.getElementById('b-excerpt').value.trim(),league:document.getElementById('b-league').value,emoji:document.getElementById('b-emoji').value.trim()||'🏉',author:'Rugby Ins & Outs',date:new Date().toISOString().split('T')[0]};
+  if(eid){const i=blogs.findIndex(b=>b.id==eid);if(i>-1)blogs[i]={...blogs[i],...obj};}
+  else blogs.unshift({id:mkid(),...obj});
+  closeMoId('mo-blog');renderBlog();saveB();
+}
+
+// ========== MODALS ==========
+function closeMo(e,id){if(e.target===document.getElementById(id))closeMoId(id);}
+function closeMoId(id){document.getElementById(id).classList.remove('open');}
+
+function renderAll(){renderTransfers();renderResults();renderLeaguePage(currentLeagueIdx);renderBlog();}
+
+loadStorage();
+</script>
+</body>
+</html>
